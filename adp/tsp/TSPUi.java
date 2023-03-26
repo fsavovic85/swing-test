@@ -153,8 +153,9 @@ public class TSPUi extends JFrame {
     // usual, paint jobs could be discarded when a new paint job arrived, resulting in
     // just the last update actually being displayed. However, this approach means that
     // thousands of repaint events are on the edt and user interactivity is blocked - so no good!
-    //this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight());
-    
+//    this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight());
+    this.imagePanel.paintCalls ++; // fifi dodavanje da Paint update bude jednak Update calls received
+    // ako stavim paintImmediately Paint calls bude duplo veci od Update calls received, a ako iskljucim paintCalls ++ sa paintImmediately bude tacno
     this.imagePanel.repaint();
   }
 

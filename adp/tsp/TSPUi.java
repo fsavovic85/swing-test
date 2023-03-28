@@ -3,13 +3,12 @@ package adp.tsp;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.swing.*;
 
@@ -29,6 +28,8 @@ public class TSPUi extends JFrame {
   private final JButton cancelButton = new JButton("Cancel");
   private final JButton replayButton = new JButton("Replay longest to shortest");
   private boolean isCanceled = false;
+
+  private List<Thread> backgroundThreads = new ArrayList<>();
   
   private final SortedSet<TSPRoute> allRoutes = new TreeSet<>();
 
@@ -45,6 +46,17 @@ public class TSPUi extends JFrame {
 //    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+
+    //tread interrup
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {
+        for (Thread thread : backgroundThreads) {
+          thread.interrupt();
+        }
+        System.exit(0);
+      }
+    });
+
     this.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);    
     this.imagePanel.setImage(this.image);
     
@@ -60,26 +72,23 @@ public class TSPUi extends JFrame {
 //    By running the repaints in a background thread, we ensure that the UI
 //    thread remains responsive to user input. However, note that doing a lot of
 //    repaints can still affect the overall performance of the application.
-    this.goButton.addActionListener((ev)-> {
 
-      new Thread(new Runnable() {
-
-        @Override
-        public void run() {
-          runAnimation();
-        }
-      }).start();
+    this.goButton.addActionListener((ev) -> {
+      Thread animationThread = new Thread(() -> {
+        runAnimation();
+      });
+      backgroundThreads.add(animationThread);
+      animationThread.start();
     });
 
     this.cancelButton.addActionListener((ev)->cancel());
 
-    this.replayButton.addActionListener((ev)-> {
-      new Thread(new Runnable() {
-        @Override
-        public void run() {
-          showLongestToShortest();
-        }
-      }).start();
+    this.replayButton.addActionListener((ev) -> {
+      Thread replyThread = new Thread(() -> {
+        showLongestToShortest();
+      });
+      backgroundThreads.add(replyThread);
+      replyThread.start();
     });
     this.cancelButton.setEnabled(false);
     this.replayButton.setEnabled(false);

@@ -1,7 +1,5 @@
 package adp.tsp;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * An interface for objects that want to listen to the TSP class output.
  * There are two methods, one called for each route tested, and one called 

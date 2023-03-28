@@ -35,9 +35,9 @@ public class TSP {
    * to output method in turn. 
    * Adapted from https://en.wikipedia.org/wiki/Heap%27s_algorithm
    * 
-   * @param indexes
+   * @param
    */
-  public void findShortestRoute() throws InterruptedException, InvocationTargetException {
+  public void findShortestRoute() {
 
     final int[] indexes = new int[this.locations.length];
     for (int i = 0; i < indexes.length; i++) {
@@ -47,18 +47,6 @@ public class TSP {
     final int[] c = new int[indexes.length];
 
     processRoute(indexes);
-//    SwingUtilities.invokeLater(() -> {
-//      processRoute(indexes);
-//    });
-//    if (SwingUtilities.isEventDispatchThread()) {
-//      // If we're already on the EDT, run the first processRoute() call directly
-//      processRoute(indexes);
-//    } else {
-//      // Otherwise, submit the first processRoute() call to the EDT
-//      SwingUtilities.invokeLater(() -> {
-//        processRoute(indexes);
-//      });
-//    }
 
     int i = 1;
     while(i < indexes.length) {
@@ -73,18 +61,6 @@ public class TSP {
           swap(indexes, c[i], i);
         }
         processRoute(indexes);
-//        if (SwingUtilities.isEventDispatchThread()) {
-//          // If we're already on the EDT, run the first processRoute() call directly
-//          processRoute(indexes);
-//        } else {
-//          // Otherwise, submit the first processRoute() call to the EDT
-//          SwingUtilities.invokeLater(() -> {
-//            processRoute(indexes);
-//          });
-//        }
-//        SwingUtilities.invokeLater(() -> {
-//          processRoute(indexes);
-//        });
         c[i] += 1;
         i = 1;
       } else {
@@ -93,18 +69,6 @@ public class TSP {
       } 
     }
 
-//    SwingUtilities.invokeLater(() -> {
-//      listener.displayBest(this.bestRoute);
-//    });
-//    if (SwingUtilities.isEventDispatchThread()) {
-//      // If we're already on the EDT, run the displayBest() call directly
-//      listener.displayBest(this.bestRoute);
-//    } else {
-//      // Otherwise, submit the displayBest() call to the EDT
-//      SwingUtilities.invokeLater(() -> {
-//        listener.displayBest(this.bestRoute);
-//      });
-//    }
     this.listener.displayBest( this.bestRoute);
     System.out.println( "TSP all done!");
   }
@@ -115,7 +79,7 @@ public class TSP {
     array[q] = s;
   }
 
-  private void processRoute(final int[] path) throws InterruptedException, InvocationTargetException {
+  private void processRoute(final int[] path) {
 
     // filter only for paths commencing at 0, so we get 0,1,2 but not 1,2,0 or 2,0,1 which are all the same
     if (path[0] == 0) {
@@ -130,7 +94,7 @@ public class TSP {
   }
 
   /** Demo main method for this class alone. */
-  public static void main(final String[] args) throws InterruptedException, InvocationTargetException {
+  public static void main(final String[] args) {
     final TSP tsp = new TSP(4, 100, 100);
     tsp.findShortestRoute();
   }

@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
  * at the end with the best route found.
  */
 public interface TSPListener {  
-  void displayUpdate(TSPRoute testRoute, TSPRoute bestRoute) throws InterruptedException, InvocationTargetException;
+  void displayUpdate(TSPRoute testRoute, TSPRoute bestRoute);
   void displayBest(TSPRoute bestRoute);
   TSPUi getUi();
 }

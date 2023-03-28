@@ -1,6 +1,7 @@
 package adp.tsp;
 
 import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * An implementation of TSPListener that is used by TSPUi to listen to 
@@ -19,15 +20,15 @@ public class UIListener implements TSPListener {
   }
   
   @Override
-  public void displayUpdate(final TSPRoute testRoute, final TSPRoute bestRoute) {
+  public void displayUpdate(final TSPRoute testRoute, final TSPRoute bestRoute) throws InterruptedException, InvocationTargetException {
 //    SwingUtilities.invokeLater(()->this.ui.displayRouteUpdate(testRoute, bestRoute));
-    this.ui.displayRouteUpdate(testRoute, bestRoute);
+    this.ui.displayRouteUpdateEDT(testRoute, bestRoute);
     this.updateCalls++;
   }
 
   @Override
   public void displayBest(final TSPRoute bestRoute) {
-    this.ui.displayBestRoute(bestRoute); 
+    this.ui.displayBestRouteEDT(bestRoute);
     System.out.println( "Update calls received: " + this.updateCalls);
   }
 

@@ -2,6 +2,7 @@ package adp.tsp;
 
 import javax.swing.*;
 import java.awt.Point;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * A class that does the work of finding every possible route and which emits 
@@ -36,7 +37,7 @@ public class TSP {
    * 
    * @param indexes
    */
-  public void findShortestRoute() {
+  public void findShortestRoute() throws InterruptedException, InvocationTargetException {
 
     final int[] indexes = new int[this.locations.length];
     for (int i = 0; i < indexes.length; i++) {
@@ -114,7 +115,7 @@ public class TSP {
     array[q] = s;
   }
 
-  private void processRoute(final int[] path) {
+  private void processRoute(final int[] path) throws InterruptedException, InvocationTargetException {
 
     // filter only for paths commencing at 0, so we get 0,1,2 but not 1,2,0 or 2,0,1 which are all the same
     if (path[0] == 0) {
@@ -129,7 +130,7 @@ public class TSP {
   }
 
   /** Demo main method for this class alone. */
-  public static void main(final String[] args) {
+  public static void main(final String[] args) throws InterruptedException, InvocationTargetException {
     final TSP tsp = new TSP(4, 100, 100);
     tsp.findShortestRoute();
   }

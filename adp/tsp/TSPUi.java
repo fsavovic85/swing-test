@@ -5,6 +5,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.InvocationTargetException;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
@@ -92,7 +93,13 @@ public class TSPUi extends JFrame {
 
 //          SwingUtilities.invokeLater(()->runAnimation());
 
-          runAnimation();
+          try {
+            runAnimation();
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          } catch (InvocationTargetException e) {
+            e.printStackTrace();
+          }
 //            try {
 //              Thread.sleep(100);
 //            } catch (InterruptedException e) {
@@ -132,7 +139,7 @@ public class TSPUi extends JFrame {
   }
 
 
-  private void runAnimation() {
+  private void runAnimation() throws InterruptedException, InvocationTargetException {
     final int numberOfCities = this.numberOfCitiesCombo.getSelectedIndex() + MINIMUM_NUMBER_OF_CITIES;
     this.goButton.setEnabled(false);
     this.replayButton.setEnabled(false);
@@ -166,6 +173,16 @@ public class TSPUi extends JFrame {
     
   }
 
+  public void displayBestRouteEDT(final TSPRoute bestRoute) {
+    try {
+      SwingUtilities.invokeAndWait(()->displayBestRoute(bestRoute));
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    }
+  }
+
   public void displayBestRoute(final TSPRoute bestRoute) {
     displayOneRoute(bestRoute, Color.GREEN);
     System.out.println("Paint calls: " + this.imagePanel.paintCalls());
@@ -195,6 +212,9 @@ public class TSPUi extends JFrame {
     this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight());
   }
 
+  public void displayRouteUpdateEDT(final TSPRoute route, final TSPRoute bestRoute) throws InterruptedException, InvocationTargetException {
+    SwingUtilities.invokeAndWait(()->displayRouteUpdate(route, bestRoute));
+  }
 
   public void displayRouteUpdate(final TSPRoute route, final TSPRoute bestRoute) {
     this.allRoutes.add(route);

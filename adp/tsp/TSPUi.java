@@ -220,7 +220,7 @@ public class TSPUi extends JFrame {
 //    SwingUtilities.invokeLater(()->this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight()));
 //    SwingUtilities.invokeLater(()->this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight()));
 //    this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight());
-    this.imagePanel.paintCalls ++;
+//    this.imagePanel.paintCalls ++;
     this.imagePanel.repaint();
   }
 

@@ -183,9 +183,9 @@ public class TSPUi extends JFrame {
 
     paintLocations(bestRoute.route(), g);
 
-//    this.imagePanel.repaint();
+    this.imagePanel.repaint();
 //    SwingUtilities.invokeLater(()->this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight()));
-    this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight());
+//    this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight());
   }
 
   public void displayRouteUpdateEDT(final TSPRoute route, final TSPRoute bestRoute) throws InterruptedException, InvocationTargetException {
@@ -220,11 +220,11 @@ public class TSPUi extends JFrame {
 //    this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight());
 //    SwingUtilities.invokeLater(()->this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight()));
 //    SwingUtilities.invokeLater(()->this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight()));
-    this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight());
+//    this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight());
 //    paintImmediatelyWithWorker(this.imagePanel);//todo paint worker
     this.imagePanel.paintCalls ++; // fifi dodavanje da Paint update bude jednak Update calls received
     // ako stavim paintImmediately Paint calls bude duplo veci od Update calls received, a ako iskljucim paintCalls ++ sa paintImmediately bude tacno
-//    this.imagePanel.repaint();
+    this.imagePanel.repaint();
   }
 
   private void paintLocations(final Point[] locations, final Graphics2D g) {

@@ -106,7 +106,14 @@ public class TSPUi extends JFrame {
       new Thread(new Runnable() {
         @Override
         public void run() {
-          showLongestToShortest();
+          try {
+            SwingUtilities.invokeAndWait(()->showLongestToShortest());
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          } catch (InvocationTargetException e) {
+            e.printStackTrace();
+          }
+//          showLongestToShortest();
         }
       }).start();
     });

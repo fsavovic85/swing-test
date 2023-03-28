@@ -124,11 +124,14 @@ public class TSPUi extends JFrame {
     this.replayButton.setEnabled(false);
     this.cancelButton.setEnabled(true);
     this.goButton.setEnabled(false);
+//    this.imagePanel.resetPaintCallCounter();
     
     for(final TSPRoute route : TSPUi.this.allRoutes) {
       if(this.isCanceled) break;
+      this.imagePanel.paintCalls--;
       displayOneRouteEDT(route, Color.WHITE);
-    }      
+    }
+    this.imagePanel.paintCalls--;
     displayBestRouteEDT(TSPUi.this.allRoutes.last());
     
   }

@@ -71,7 +71,7 @@ public class TSPUi extends JFrame {
       }).start();
     });
 
-    this.cancelButton.addActionListener((ev)->cancel());//todo
+    this.cancelButton.addActionListener((ev)->cancel());
 
     this.replayButton.addActionListener((ev)-> {
       new Thread(new Runnable() {
@@ -81,7 +81,7 @@ public class TSPUi extends JFrame {
         }
       }).start();
     });
-    this.cancelButton.setEnabled(true);//todo false
+    this.cancelButton.setEnabled(false);
     this.replayButton.setEnabled(false);
 
     topPanel.add(this.numberOfCitiesCombo);
@@ -147,7 +147,7 @@ public class TSPUi extends JFrame {
     displayOneRoute(bestRoute, Color.GREEN);
     System.out.println("Paint calls: " + this.imagePanel.paintCalls());
     this.goButton.setEnabled(true);
-    this.cancelButton.setEnabled(true); //todo false
+    this.cancelButton.setEnabled(false);
     this.replayButton.setEnabled(true);
     this.setCanceled(false);
   }

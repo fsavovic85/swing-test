@@ -20,4 +20,9 @@ public class SysOutListener implements TSPListener {
     System.out.println(Arrays.toString(bestRoute.route()));
   }
 
+  @Override
+  public TSPUi getUi() {
+    return null;
+  }
+
 }

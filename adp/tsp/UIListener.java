@@ -1,5 +1,7 @@
 package adp.tsp;
 
+import javax.swing.*;
+
 /**
  * An implementation of TSPListener that is used by TSPUi to listen to 
  * an instance of TSP and forward updates to the TSPUi methods that display the routes.
@@ -18,6 +20,7 @@ public class UIListener implements TSPListener {
   
   @Override
   public void displayUpdate(final TSPRoute testRoute, final TSPRoute bestRoute) {
+//    SwingUtilities.invokeLater(()->this.ui.displayRouteUpdate(testRoute, bestRoute));
     this.ui.displayRouteUpdate(testRoute, bestRoute);
     this.updateCalls++;
   }
@@ -27,5 +30,11 @@ public class UIListener implements TSPListener {
     this.ui.displayBestRoute(bestRoute); 
     System.out.println( "Update calls received: " + this.updateCalls);
   }
+
+  @Override
+  public TSPUi getUi() {
+    return ui;
+  }
+
 
 }

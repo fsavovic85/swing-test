@@ -1,5 +1,6 @@
 package adp.tsp;
 
+import javax.swing.*;
 import java.awt.Point;
 
 /**
@@ -45,9 +46,25 @@ public class TSP {
     final int[] c = new int[indexes.length];
 
     processRoute(indexes);
+//    SwingUtilities.invokeLater(() -> {
+//      processRoute(indexes);
+//    });
+//    if (SwingUtilities.isEventDispatchThread()) {
+//      // If we're already on the EDT, run the first processRoute() call directly
+//      processRoute(indexes);
+//    } else {
+//      // Otherwise, submit the first processRoute() call to the EDT
+//      SwingUtilities.invokeLater(() -> {
+//        processRoute(indexes);
+//      });
+//    }
 
     int i = 1;
     while(i < indexes.length) {
+      TSPUi tSPUi = listener.getUi();
+      if(tSPUi.isCanceled()) {
+        break;
+      };
       if (c[i] < i) {
         if ((i%2)==0) { // is even then
           swap(indexes, 0, i);
@@ -55,6 +72,18 @@ public class TSP {
           swap(indexes, c[i], i);
         }
         processRoute(indexes);
+//        if (SwingUtilities.isEventDispatchThread()) {
+//          // If we're already on the EDT, run the first processRoute() call directly
+//          processRoute(indexes);
+//        } else {
+//          // Otherwise, submit the first processRoute() call to the EDT
+//          SwingUtilities.invokeLater(() -> {
+//            processRoute(indexes);
+//          });
+//        }
+//        SwingUtilities.invokeLater(() -> {
+//          processRoute(indexes);
+//        });
         c[i] += 1;
         i = 1;
       } else {
@@ -63,6 +92,18 @@ public class TSP {
       } 
     }
 
+//    SwingUtilities.invokeLater(() -> {
+//      listener.displayBest(this.bestRoute);
+//    });
+//    if (SwingUtilities.isEventDispatchThread()) {
+//      // If we're already on the EDT, run the displayBest() call directly
+//      listener.displayBest(this.bestRoute);
+//    } else {
+//      // Otherwise, submit the displayBest() call to the EDT
+//      SwingUtilities.invokeLater(() -> {
+//        listener.displayBest(this.bestRoute);
+//      });
+//    }
     this.listener.displayBest( this.bestRoute);
     System.out.println( "TSP all done!");
   }

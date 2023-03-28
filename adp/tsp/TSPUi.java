@@ -1,20 +1,16 @@
 package adp.tsp;
 
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 /**
  * The UI application that provides the window and has a main method.
@@ -31,12 +27,33 @@ public class TSPUi extends JFrame {
   private final JButton goButton = new JButton("Go");
   private final JButton cancelButton = new JButton("Cancel");
   private final JButton replayButton = new JButton("Replay longest to shortest");
+  private boolean isCanceled = false;
   
   private final SortedSet<TSPRoute> allRoutes = new TreeSet<>();
-     
+
+  public boolean isCanceled() {
+    return isCanceled;
+  }
+
+  public void setCanceled(boolean canceled) {
+    isCanceled = canceled;
+  }
+
   public TSPUi(final int width, final int height) {
-    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
- 
+    ExecutorService executor = Executors.newFixedThreadPool(5);
+    WindowListener windowListener = new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        // Signal all background threads to stop
+        executor.shutdownNow();
+      }
+    };
+    addWindowListener(windowListener);
+
+
+//    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+
     this.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);    
     this.imagePanel.setImage(this.image);
     
@@ -48,10 +65,56 @@ public class TSPUi extends JFrame {
       cities[i] = i + MINIMUM_NUMBER_OF_CITIES + " cities";
     }
     this.numberOfCitiesCombo = new JComboBox<String>(cities);
-    this.goButton.addActionListener((ev)->runAnimation());
-    this.cancelButton.addActionListener((ev)->cancel());
-    this.replayButton.addActionListener((ev)->showLongestToShortest());
-    this.cancelButton.setEnabled(false);
+//    this.goButton.addActionListener((ev)->runAnimation());//todo
+
+//    By running the repaints in a background thread, we ensure that the UI
+//    thread remains responsive to user input. However, note that doing a lot of
+//    repaints can still affect the overall performance of the application.
+
+    // Create a thread pool with 5 threads
+//    ExecutorService executor = Executors.newFixedThreadPool(5);
+//
+//    this.goButton.addActionListener((ev)-> {
+//      // Submit the task to the thread pool
+//      executor.submit(new Runnable() {
+//        @Override
+//        public void run() {
+//          runAnimation();
+//        }
+//      });
+//    });
+    this.goButton.addActionListener((ev)-> {
+
+      new Thread(new Runnable() {
+
+        @Override
+        public void run() {
+
+//          SwingUtilities.invokeLater(()->runAnimation());
+
+          runAnimation();
+//            try {
+//              Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//              e.printStackTrace();
+//            }
+
+        }
+      }).start();
+    });
+
+    this.cancelButton.addActionListener((ev)->cancel());//todo
+
+    this.replayButton.addActionListener((ev)-> {
+      new Thread(new Runnable() {
+        @Override
+        public void run() {
+          showLongestToShortest();
+        }
+      }).start();
+    });
+//    this.replayButton.addActionListener((ev)->showLongestToShortest());
+    this.cancelButton.setEnabled(true);//todo false
     this.replayButton.setEnabled(false);
 
     topPanel.add(this.numberOfCitiesCombo);
@@ -68,18 +131,19 @@ public class TSPUi extends JFrame {
     
   }
 
-  private void runAnimation() {  
+
+  private void runAnimation() {
     final int numberOfCities = this.numberOfCitiesCombo.getSelectedIndex() + MINIMUM_NUMBER_OF_CITIES;
     this.goButton.setEnabled(false);
     this.replayButton.setEnabled(false);
     this.cancelButton.setEnabled(true);
     this.allRoutes.clear();
     this.imagePanel.resetPaintCallCounter();
-    
     final TSP tsp = new TSP(numberOfCities, TSPUi.this.image.getWidth(), TSPUi.this.image.getHeight());
     tsp.setListener(new UIListener(TSPUi.this));
+//    SwingUtilities.invokeLater(()->tsp.findShortestRoute());
     tsp.findShortestRoute();
-    
+
   }
 
   private void cancel() {
@@ -87,8 +151,7 @@ public class TSPUi extends JFrame {
     System.out.println( "Cancelling...");
     this.goButton.setEnabled(true);
     this.cancelButton.setEnabled(false);
-//    SwingUtilities.invokeLater(()->launch());
-
+    this.setCanceled(true);
   }
   
   private void showLongestToShortest() {
@@ -107,8 +170,9 @@ public class TSPUi extends JFrame {
     displayOneRoute(bestRoute, Color.GREEN);
     System.out.println("Paint calls: " + this.imagePanel.paintCalls());
     this.goButton.setEnabled(true);
-    this.cancelButton.setEnabled(false);
+    this.cancelButton.setEnabled(true); //todo false
     this.replayButton.setEnabled(true);
+    this.setCanceled(false);
   }
 
   private void displayOneRoute(final TSPRoute bestRoute, final Color color) {
@@ -127,6 +191,7 @@ public class TSPUi extends JFrame {
     paintLocations(bestRoute.route(), g);
 
 //    this.imagePanel.repaint();
+//    SwingUtilities.invokeLater(()->this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight()));
     this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight());
   }
 
@@ -156,7 +221,11 @@ public class TSPUi extends JFrame {
     // usual, paint jobs could be discarded when a new paint job arrived, resulting in
     // just the last update actually being displayed. However, this approach means that
     // thousands of repaint events are on the edt and user interactivity is blocked - so no good!
+//    this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight());
+//    SwingUtilities.invokeLater(()->this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight()));
+//    SwingUtilities.invokeLater(()->this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight()));
     this.imagePanel.paintImmediately(0,0,this.imagePanel.getWidth(), this.imagePanel.getHeight());
+//    paintImmediatelyWithWorker(this.imagePanel);//todo paint worker
     this.imagePanel.paintCalls ++; // fifi dodavanje da Paint update bude jednak Update calls received
     // ako stavim paintImmediately Paint calls bude duplo veci od Update calls received, a ako iskljucim paintCalls ++ sa paintImmediately bude tacno
 //    this.imagePanel.repaint();
@@ -181,7 +250,6 @@ public class TSPUi extends JFrame {
     final Point e = locations[0];
     g.drawLine(s.x, s.y, e.x, e.y);    
   }
-
   
   public static void launch() {
     new TSPUi(500, 500);

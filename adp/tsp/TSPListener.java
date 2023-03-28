@@ -8,4 +8,5 @@ package adp.tsp;
 public interface TSPListener {  
   void displayUpdate(TSPRoute testRoute, TSPRoute bestRoute);
   void displayBest(TSPRoute bestRoute);
+  TSPUi getUi();
 }

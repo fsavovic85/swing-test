@@ -1,8 +1,6 @@
 package adp.tsp;
 
-import javax.swing.*;
 import java.awt.Point;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * A class that does the work of finding every possible route and which emits 

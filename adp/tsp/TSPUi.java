@@ -41,16 +41,6 @@ public class TSPUi extends JFrame {
   }
 
   public TSPUi(final int width, final int height) {
-    ExecutorService executor = Executors.newFixedThreadPool(5);
-    WindowListener windowListener = new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent e) {
-        // Signal all background threads to stop
-        executor.shutdownNow();
-      }
-    };
-    addWindowListener(windowListener);
-
 
 //    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setDefaultCloseOperation(EXIT_ON_CLOSE);

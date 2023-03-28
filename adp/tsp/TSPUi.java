@@ -56,33 +56,16 @@ public class TSPUi extends JFrame {
       cities[i] = i + MINIMUM_NUMBER_OF_CITIES + " cities";
     }
     this.numberOfCitiesCombo = new JComboBox<String>(cities);
-//    this.goButton.addActionListener((ev)->runAnimation());//todo
 
 //    By running the repaints in a background thread, we ensure that the UI
 //    thread remains responsive to user input. However, note that doing a lot of
 //    repaints can still affect the overall performance of the application.
-
-    // Create a thread pool with 5 threads
-//    ExecutorService executor = Executors.newFixedThreadPool(5);
-//
-//    this.goButton.addActionListener((ev)-> {
-//      // Submit the task to the thread pool
-//      executor.submit(new Runnable() {
-//        @Override
-//        public void run() {
-//          runAnimation();
-//        }
-//      });
-//    });
     this.goButton.addActionListener((ev)-> {
 
       new Thread(new Runnable() {
 
         @Override
         public void run() {
-
-//          SwingUtilities.invokeLater(()->runAnimation());
-
           try {
             runAnimation();
           } catch (InterruptedException e) {
@@ -90,12 +73,6 @@ public class TSPUi extends JFrame {
           } catch (InvocationTargetException e) {
             e.printStackTrace();
           }
-//            try {
-//              Thread.sleep(100);
-//            } catch (InterruptedException e) {
-//              e.printStackTrace();
-//            }
-
         }
       }).start();
     });
@@ -106,18 +83,10 @@ public class TSPUi extends JFrame {
       new Thread(new Runnable() {
         @Override
         public void run() {
-          try {
-            SwingUtilities.invokeAndWait(()->showLongestToShortest());
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          } catch (InvocationTargetException e) {
-            e.printStackTrace();
-          }
-//          showLongestToShortest();
+          showLongestToShortest();
         }
       }).start();
     });
-//    this.replayButton.addActionListener((ev)->showLongestToShortest());
     this.cancelButton.setEnabled(true);//todo false
     this.replayButton.setEnabled(false);
 
@@ -145,7 +114,6 @@ public class TSPUi extends JFrame {
     this.imagePanel.resetPaintCallCounter();
     final TSP tsp = new TSP(numberOfCities, TSPUi.this.image.getWidth(), TSPUi.this.image.getHeight());
     tsp.setListener(new UIListener(TSPUi.this));
-//    SwingUtilities.invokeLater(()->tsp.findShortestRoute());
     tsp.findShortestRoute();
 
   }
@@ -164,9 +132,10 @@ public class TSPUi extends JFrame {
     this.goButton.setEnabled(false);
     
     for(final TSPRoute route : TSPUi.this.allRoutes) {
-      displayOneRoute(route, Color.WHITE);
+      if(this.isCanceled) break;
+      displayOneRouteEDT(route, Color.WHITE);
     }      
-    displayBestRoute(TSPUi.this.allRoutes.last()); 
+    displayBestRouteEDT(TSPUi.this.allRoutes.last());
     
   }
 
@@ -187,6 +156,16 @@ public class TSPUi extends JFrame {
     this.cancelButton.setEnabled(true); //todo false
     this.replayButton.setEnabled(true);
     this.setCanceled(false);
+  }
+
+  private void displayOneRouteEDT(final TSPRoute bestRoute, final Color color) {
+    try {
+      SwingUtilities.invokeAndWait(() -> displayOneRoute(bestRoute, color));
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    }
   }
 
   private void displayOneRoute(final TSPRoute bestRoute, final Color color) {

@@ -44,7 +44,7 @@ public class TSPUi extends JFrame {
   public TSPUi(final int width, final int height) {
 
 //    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setDefaultCloseOperation(EXIT_ON_CLOSE);
+//    setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 
     //tread interrup
